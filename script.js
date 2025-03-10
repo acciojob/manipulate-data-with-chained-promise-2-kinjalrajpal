@@ -1,40 +1,34 @@
-const output = document.getElementById("output");
-      const errorDiv = document.getElementById("error");
-      const loading = document.getElementById("loading");
-      const btn = document.getElementById("download-images-button");
+// script.js
+function manipulateArray() {
+  const array = [1, 2, 3, 4];
+  const outputDiv = document.getElementById("output");
 
-      const images = [
-        { url: "https://picsum.photos/id/237/200/300" },
-        { url: "https://picsum.photos/id/238/200/300" },
-        { url: "https://picsum.photos/id/239/200/300" },
-      ];
+  // Initial promise resolving with array after 3 seconds
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(array);
+    }, 3000);
+  })
+    .then((data) => {
+      // First transformation: Filter even numbers
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const evenNumbers = data.filter((num) => num % 2 === 0);
+          outputDiv.textContent = evenNumbers.join(",");
+          resolve(evenNumbers);
+        }, 1000);
+      });
+    })
+    .then((evenNumbers) => {
+      // Second transformation: Multiply even numbers by 2
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const multipliedNumbers = evenNumbers.map((num) => num * 2);
+          outputDiv.textContent = multipliedNumbers.join(",");
+          resolve(multipliedNumbers);
+        }, 2000);
+      });
+    });
+}
 
-      function downloadImage(url) {
-        return new Promise((resolve, reject) => {
-          const img = new Image();
-          img.src = url;
-          img.onload = () => resolve(img);
-          img.onerror = () => reject(`Failed to load image from ${url}`);
-        });
-      }
-
-      function downloadImages() {
-        loading.style.display = "block";
-        errorDiv.textContent = "";
-        output.innerHTML = "";
-
-        const promises = images.map((img) => downloadImage(img.url));
-
-        Promise.all(promises)
-          .then((imgs) => {
-            imgs.forEach((img) => output.appendChild(img));
-          })
-          .catch((err) => {
-            errorDiv.textContent = err;
-          })
-          .finally(() => {
-            loading.style.display = "none";
-          });
-      }
-
-      btn.addEventListener("click", downloadImages);
+manipulateArray();
